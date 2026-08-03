@@ -1,0 +1,3 @@
+"use client";
+import Link from "next/link";
+export default function TowerMapError({reset}:{reset:()=>void}){return <section className="rounded-2xl border border-red-200 bg-red-50 p-6"><h1 className="text-xl font-semibold">Tower map unavailable</h1><p className="mt-2 text-sm">The bounded map data could not be loaded. No Tower data was changed.</p><div className="mt-4 flex gap-3"><button onClick={reset} className="min-h-11 rounded-xl bg-red-700 px-4 text-sm font-semibold text-white focus-visible:ring-2">Try again</button><Link href="/home/towers" className="inline-flex min-h-11 items-center font-semibold text-indigo-700 focus-visible:ring-2">List View</Link></div></section>}

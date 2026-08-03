@@ -1,0 +1,1 @@
+import{resolveAuthenticatedUser}from"@/services/authentication/auth";export async function resolveNotificationOwner(){const user=await resolveAuthenticatedUser(),userKey=String(user.user_key??"");if(!/^[A-Za-z0-9_-]{1,160}$/.test(userKey))throw new Error("recipient_not_found");return{user,userKey}}

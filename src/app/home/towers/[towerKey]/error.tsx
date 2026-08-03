@@ -1,0 +1,2 @@
+"use client";
+export default function TowerWorkspaceError({reset}:{error:Error;reset:()=>void}){return <section role="alert" className="rounded-2xl border border-red-200 bg-red-50 p-6"><h1 className="text-xl font-semibold">Tower workspace unavailable</h1><p className="mt-2 text-sm">The bounded operational records could not be loaded. No data was changed.</p><button className="action-button mt-4" onClick={reset}>Try again</button></section>}

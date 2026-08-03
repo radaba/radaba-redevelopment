@@ -1,0 +1,7 @@
+﻿# Compatibility impact
+
+All 15 paths, methods, success envelopes, casing, and DTO fields remain intact. In `legacy-compatible`, policy failures do not block. In `observe`, the same response is returned and a sanitized decision is recorded. In `enforce`, malformed identifiers return 400, authentication failures 401, authorization failures 403, hidden unrelated/missing objects 404, existing handler conflicts remain 409, and internal failures become a legacy-shaped safe 500.
+
+Public: signin, resetPassword, getCurrentTime, getRejectDropReasonList, getUtility. Protected: signout; getassignmentsById, getCellDetails, getImageDetails, getAorSummaryById, updateAssignmentDetails, updateImageDetails; getCellDetailsPerSector, updateCellDetails; updateUserDetails.
+
+Current Android does not send the Authorization header (interceptor code is disabled) and login does not persist the returned token into that interceptor. Therefore enforce mode would reject protected calls. Before staging enforcement Android must store/refresh the Firebase ID token, send `Authorization: Bearer`, preserve 401 logout behavior, add explicit 403 handling, and validate every DTO/error path. No Android change was made here.

@@ -2,17 +2,35 @@
   "name": "radaba-redevelopment",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "npm@10.8.2",
+  "engines": {
+    "node": ">=22.14.0 <23",
+    "npm": ">=10.8.2 <11"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "typecheck": "tsc --noEmit",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "node scripts/run-test-group.mjs full",
+    "test:unit": "node scripts/run-test-group.mjs unit",
+    "test:integration": "node scripts/run-test-group.mjs integration",
+    "test:mobile": "node scripts/run-test-group.mjs mobile",
+    "test:ci": "node scripts/run-test-group.mjs full",
+    "env:check": "node scripts/validate-environment.mjs",
+    "rules:check": "node scripts/validate-firebase-rules.mjs",
+    "secrets:check": "node scripts/scan-secrets.mjs",
+    "release:check": "node scripts/release-preflight.mjs",
+    "smoke": "node scripts/smoke-test.mjs",
+    "verify": "npm run env:check && npm run typecheck && npm run lint && npm run test:ci && npm run rules:check && npm run secrets:check && npm run build"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.4.0",
     "firebase": "^12.16.0",
     "firebase-admin": "^13.10.0",
     "lucide-react": "^1.25.0",
+    "maplibre-gl": "^6.0.0",
     "next": "16.2.11",
     "react": "19.2.4",
     "react-dom": "19.2.4",

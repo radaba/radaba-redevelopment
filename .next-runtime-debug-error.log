@@ -1,0 +1,34 @@
+⨯ Error: The Firebase session cookie has been revoked.
+    at async resolveVerifiedSession (src\lib\auth\session-lifecycle.mjs:11:24)
+    at async AssignmentDashboardPage (src\app\home\assignment\dashboard\page.tsx:16:16)
+   9 | export async function resolveVerifiedSession({ cookieValue, verifySessionCookie, resolveUs...
+  10 |   if (!cookieValue) throw new Error("Unauthorized");
+> 11 |   const decodedToken = await verifySessionCookie(cookieValue, checkRevoked);
+     |                        ^
+  12 |   return resolveUser(decodedToken);
+  13 | }
+  14 | {
+  errorInfo: {
+    code: 'auth/session-cookie-revoked',
+    message: 'The Firebase session cookie has been revoked.'
+  },
+  codePrefix: 'auth',
+  digest: '3378654674'
+}
+⨯ Error: The Firebase session cookie has been revoked.
+    at async resolveVerifiedSession (src\lib\auth\session-lifecycle.mjs:11:24)
+    at async AssignmentDashboardPage (src\app\home\assignment\dashboard\page.tsx:16:16)
+   9 | export async function resolveVerifiedSession({ cookieValue, verifySessionCookie, resolveUs...
+  10 |   if (!cookieValue) throw new Error("Unauthorized");
+> 11 |   const decodedToken = await verifySessionCookie(cookieValue, checkRevoked);
+     |                        ^
+  12 |   return resolveUser(decodedToken);
+  13 | }
+  14 | {
+  errorInfo: {
+    code: 'auth/session-cookie-revoked',
+    message: 'The Firebase session cookie has been revoked.'
+  },
+  codePrefix: 'auth',
+  digest: '3378654674'
+}

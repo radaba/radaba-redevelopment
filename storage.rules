@@ -1,0 +1,10 @@
+﻿rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Phase 7I uses verified server-session APIs and Firebase Admin only.
+    // Admin SDK bypasses rules; all direct browser Storage access is denied.
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

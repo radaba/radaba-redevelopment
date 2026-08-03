@@ -1,0 +1,1 @@
+import type{User}from"@/types/user";import type{TowerAuditActor}from"@/features/tower/tower-audit-contract";export const towerAuditActor=(user:User):TowerAuditActor=>({uid:String(user.uid??""),email:String(user.email??"").trim().toLowerCase(),name:String(user.name??"").trim()});

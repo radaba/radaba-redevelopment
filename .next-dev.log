@@ -1,0 +1,28 @@
+
+> radaba-redevelopment@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.11 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.169:3000
+- Environments: .env.local
+✓ Ready in 1571ms
+Creating turbopack project { dir: 'D:\\next\\if\\radaba-redevelopment', testMode: true }
+
+ GET /home/admin/users 307 in 3.2s (next.js: 749ms, application-code: 2.5s)
+ GET /home/admin/users/-OyvoV6osgCsGKJX9M2z 307 in 3.1s (next.js: 2.8s, application-code: 310ms)
+ PATCH /api/admin/users/-OyvoV6osgCsGKJX9M2z/role 401 in 3.1s (next.js: 3.0s, application-code: 68ms)
+ PATCH /api/admin/users/-OyvoV6osgCsGKJX9M2z/status 401 in 2.9s (next.js: 2.9s, application-code: 23ms)
+ PATCH /api/admin/privileges/probe 401 in 2.9s (next.js: 2.9s, application-code: 23ms)
+ POST /api/admin/users/-OyvoV6osgCsGKJX9M2z/identity-repair/preview 401 in 3.6s (next.js: 3.6s, application-code: 25ms)
+ POST /api/admin/users/-OyvoV6osgCsGKJX9M2z/sessions 401 in 3.7s (next.js: 3.7s, application-code: 34ms)
+ GET / 200 in 414ms (next.js: 262ms, application-code: 152ms)
+ GET /home/assignment/dashboard 307 in 3.2s (next.js: 143ms, application-code: 3.0s)
+ GET /login 200 in 1173ms (next.js: 257ms, application-code: 916ms)
+ GET /home/assignment/dashboard 307 in 695ms (next.js: 11ms, application-code: 684ms)
+ GET /login 200 in 423ms (next.js: 8ms, application-code: 415ms)
+ POST /api/auth/login 200 in 3.6s (next.js: 110ms, application-code: 3.5s)
+ GET /home/assignment 200 in 3.4s (next.js: 86ms, application-code: 3.3s)
+ GET /home/assignment 200 in 4.2s (next.js: 10ms, application-code: 4.2s)
+ GET /home/assignment 200 in 1881ms (next.js: 8ms, application-code: 1873ms)
+[?25h

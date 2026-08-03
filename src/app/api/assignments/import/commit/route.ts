@@ -1,0 +1,8 @@
+import { NextResponse } from "next/server";
+import { resolveAssignmentActor } from "@/server/assignment/assignment-session";
+import { assignmentApiError } from "@/server/assignment/assignment-api";
+import { readAssignmentImport } from "@/server/assignment/assignment-import-file";
+import { AssignmentImportService } from "@/server/assignment/assignment-import-service";
+import { FirebaseAssignmentCommandRepository } from "@/server/assignment/firebase-assignment-command-repository";
+import { FirebaseNotificationProducer } from "@/server/notification/firebase-notification-producer";
+export async function POST(request:Request){try{const actor=await resolveAssignmentActor();const {filename,rows}=await readAssignmentImport(request);const data=await new AssignmentImportService(new FirebaseAssignmentCommandRepository()).commit(rows);if(data.invalidRows)return NextResponse.json({success:false,code:"import-validation-failed",error:"Import data changed or is invalid. No Assignments were created.",data:{filename,...data}},{status:422,headers:{"Cache-Control":"private, no-store"}});await new FirebaseNotificationProducer().deliver({type:"assignment_import_completed",category:"system",title:"Assignment import completed",message:`Assignment import completed with ${data.importedRows} created row(s).`,recipientEmails:[String(actor.email)],actorName:String(actor.name),targetType:"import",severity:"info",operationId:`assignment-import:${filename}:${data.importedRows}`});return NextResponse.json({success:true,data:{filename,...data}},{headers:{"Cache-Control":"private, no-store"}});}catch(error){return assignmentApiError(error);}}

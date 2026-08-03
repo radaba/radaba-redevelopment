@@ -1,0 +1,7 @@
+﻿# Test matrix
+
+`security-hardening.test.js` covers configuration/default/production guard/client override; bearer-cookie precedence and malformed/missing tokens; valid, invalid, expired and revoked verification; active/inactive/disabled/missing/duplicate profiles and unknown roles; owner/non-owner/coordinator/unrelated coordinator/administrator; spoofing; self/admin profiles; Assignment, Cell/Sector and image-parent relationships; numeric/Unicode/whitespace/RTDB identifiers; three rollout modes; safe errors; audit sanitization/failure isolation; all route policies and central wiring; revocation-enabled Firebase adapter; and secret-shaped fixture scans.
+
+`auth-profile.test.js` additionally proves Android-compatible signin output, safe credential mapping, token-free login logs, and logout success/missing-token behavior. Existing M4R-M10R suites remain the DTO/route/replay compatibility regression set. Tests use deterministic fakes and do not import or call operational Firebase.
+
+Validation also runs authentication, administration, Assignment, Tower, Rigger, Cell/Sector suites, TypeScript, ESLint, production build, route manifest/casing checks, git diff checks, legacy hashes, and sensitive-data/dependency checks.

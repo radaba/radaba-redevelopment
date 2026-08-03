@@ -12,6 +12,8 @@ export function buildLegacyUserSessionPayload(user, privilege) {
   };
 }
 
-export default {
+const compatModule = {
   buildLegacyUserSessionPayload,
 };
+
+export default compatModule;

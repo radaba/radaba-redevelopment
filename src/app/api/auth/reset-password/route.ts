@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { sendPasswordResetEmail } from "@/services/auth";
+import { sendPasswordResetEmail } from "@/services/authentication/auth";
 
 export async function POST(request: NextRequest) {
   try {

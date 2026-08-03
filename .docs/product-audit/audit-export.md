@@ -1,0 +1,3 @@
+# CSV export
+
+The authorized endpoint exports the active filters over the bounded loaded result set. Output uses a UTF-8 BOM, deterministic columns/order, formula-injection protection, and the same redaction policy as the UI. The filename and response header explicitly identify bounded current-filter scope. Export does not mutate audit or operational records. Export-access auditing is not added because the existing writer policy has no dedicated read-access event contract.

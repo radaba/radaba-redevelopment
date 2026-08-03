@@ -1,0 +1,3 @@
+﻿import { createHash } from "node:crypto";
+export function rolloutBucket(stableKey,salt="radaba-mobile-v1"){if(typeof stableKey!=="string"||!stableKey.trim())throw new Error("A stable rollout key is required");const digest=createHash("sha256").update(`${salt}:${stableKey}`).digest();return digest.readUInt32BE(0)%100;}
+export function selectProgressiveRollout(stableKey,percentage,salt){if(![0,5,10,25,50,75,100].includes(percentage))throw new Error("Unsupported rollout percentage");return {selected:percentage===100||(percentage>0&&rolloutBucket(stableKey,salt)<percentage),bucket:rolloutBucket(stableKey,salt),percentage};}

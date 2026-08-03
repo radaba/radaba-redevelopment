@@ -1,0 +1,11 @@
+﻿import { NextResponse } from "next/server";
+import { z } from "zod";
+import { ASSIGNMENT_DEFAULT_CHECKLIST_ITEMS, ASSIGNMENT_EXECUTION_LIMITS } from "@/features/assignment/assignment-execution-contract";
+import { assignmentApiError } from "@/server/assignment/assignment-api";
+import { resolveAssignmentActor } from "@/server/assignment/assignment-session";
+import { AssignmentExecutionService } from "@/server/assignment/assignment-execution-service";
+import { FirebaseAssignmentCommandRepository } from "@/server/assignment/firebase-assignment-command-repository";
+const defaultIds=new Set(ASSIGNMENT_DEFAULT_CHECKLIST_ITEMS.map((item)=>item.id)); const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const item=z.object({id:z.string().refine((value)=>defaultIds.has(value)||uuid.test(value),"Invalid checklist item ID."),label:z.string().trim().min(1).max(ASSIGNMENT_EXECUTION_LIMITS.maximumLabelLength).optional(),status:z.enum(["pending","completed","not_applicable"]),note:z.string().trim().max(ASSIGNMENT_EXECUTION_LIMITS.maximumItemNoteLength).optional()}).strict().refine((value)=>defaultIds.has(value.id)||Boolean(value.label),"Custom checklist label is required.");
+const schema=z.object({expectedRevision:z.number().int().min(0),items:z.array(item).max(ASSIGNMENT_EXECUTION_LIMITS.maximumChecklistItems)}).strict().refine((value)=>new Set(value.items.map((entry)=>entry.id)).size===value.items.length,"Checklist item IDs must be unique.");
+export async function PUT(request:Request,{params}:{params:Promise<{assignmentId:string}>}){try{const user=await resolveAssignmentActor();const body=schema.safeParse(await request.json().catch(()=>null));if(!body.success)return NextResponse.json({success:false,code:"invalid-input",error:"Invalid checklist input."},{status:400});const {assignmentId}=await params;const data=await new AssignmentExecutionService(new FirebaseAssignmentCommandRepository()).updateChecklist(decodeURIComponent(assignmentId),body.data,{uid:String(user.uid),name:String(user.name),email:String(user.email),role:String(user.role)});return NextResponse.json({success:true,data},{headers:{"Cache-Control":"private, no-store"}});}catch(error){return assignmentApiError(error);}}

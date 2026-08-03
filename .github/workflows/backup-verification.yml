@@ -1,0 +1,19 @@
+name: Backup verification
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "41 4 * * 0"
+permissions:
+  contents: read
+concurrency:
+  group: radaba-backup-verification
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: [self-hosted, production]
+    environment: production-backup-verification
+    steps:
+      - name: Require approved backup adapter
+        run: test -x /opt/radaba/bin/verify-latest-backup
+      - name: Restore latest backup into isolated verification target
+        run: /opt/radaba/bin/verify-latest-backup --isolated --no-production-writes

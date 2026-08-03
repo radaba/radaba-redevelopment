@@ -1,0 +1,7 @@
+import {NextResponse} from "next/server";
+import {resolveAdministrator} from "@/server/admin/admin-session";
+import {adminApiError} from "@/server/admin/admin-api";
+import {towerAuditActor} from "@/server/tower/tower-audit-session";
+import {FirebaseNotificationProducer} from "@/server/notification/firebase-notification-producer";
+import {AssignmentSnapshotBackfillError,AssignmentTowerSnapshotBackfillService} from "@/server/assignment/assignment-tower-snapshot-backfill-service";
+export async function POST(request:Request){try{const user=await resolveAdministrator(),body=await request.json().catch(()=>null),data=await new AssignmentTowerSnapshotBackfillService().commit(body,towerAuditActor(user));await new FirebaseNotificationProducer().deliver({type:"maintenance_completed",category:"system",title:"Assignment maintenance completed",message:"Assignment snapshot maintenance completed.",recipientEmails:[String(user.email)],actorName:String(user.name),targetType:"maintenance",severity:"warning",operationId:`assignment-maintenance:${String((data as Record<string,unknown>).batchId??(data as Record<string,unknown>).operationId??"completed")}`});return NextResponse.json({success:true,data},{headers:{"Cache-Control":"private, no-store"}})}catch(error){if(error instanceof AssignmentSnapshotBackfillError)return NextResponse.json({success:false,error:error.message},{status:error.status});return adminApiError(error)}}

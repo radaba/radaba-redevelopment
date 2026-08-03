@@ -1,0 +1,3 @@
+# Recipient policy
+
+Recipients are derived after source success from server-resolved Assignment records and user lookups. Assignment creation targets rigger, coordinator and RNO; reassignment targets previous/new rigger and coordinator; completion targets coordinator and RNO; pause/resume and revisit target directly involved operational users. Tower edit/synchronization currently targets the administrator actor and reports affected count. Role/status changes target the user and actor; privilege changes target users holding the affected role. Ambiguous or missing email matches are skipped and counted, never guessed.

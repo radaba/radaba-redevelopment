@@ -1,6 +1,6 @@
 import { getApp, getApps, initializeApp } from "firebase/app";
 import {
-  browserLocalPersistence,
+  inMemoryPersistence,
   getAuth,
   setPersistence,
 } from "firebase/auth";
@@ -30,13 +30,13 @@ const firebaseApp =
 export const firebaseAuth =
   getAuth(firebaseApp);
 
-export async function enableLocalPersistence(): Promise<void> {
+export async function enableInMemoryPersistence(): Promise<void> {
   if (typeof window === "undefined") {
     return;
   }
 
   await setPersistence(
     firebaseAuth,
-    browserLocalPersistence,
+    inMemoryPersistence,
   );
 }

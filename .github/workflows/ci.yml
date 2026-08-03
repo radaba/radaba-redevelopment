@@ -1,0 +1,87 @@
+name: CI
+on:
+  workflow_call:
+  pull_request:
+  push:
+    branches: [main, develop]
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  CI: "true"
+  RADABA_ENV: development
+  APP_URL: https://development.example.invalid
+  APP_VERSION: 0.1.0
+  BUILD_ID: ${{ github.sha }}
+  NEXT_PUBLIC_FIREBASE_API_KEY: ci-placeholder
+  NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: development.example.invalid
+  NEXT_PUBLIC_FIREBASE_DATABASE_URL: https://development.example.invalid
+  NEXT_PUBLIC_FIREBASE_PROJECT_ID: radaba-development
+  NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: radaba-development.appspot.com
+  NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: "000000000000"
+  NEXT_PUBLIC_FIREBASE_APP_ID: ci-placeholder
+  FIREBASE_ADMIN_PROJECT_ID: radaba-development
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci
+      - run: npm run env:check
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: git diff --check
+  contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci
+      - run: npm run test:ci
+      - run: npm run test:mobile
+      - run: npm run rules:check
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci
+      - run: npm run secrets:check
+      - run: npm audit --audit-level=high
+  build:
+    needs: [quality, contracts, security]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci
+      - uses: actions/cache@v4
+        with:
+          path: .next/cache
+          key: next-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.sha }}
+          restore-keys: next-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-
+      - run: npm run build
+      - run: tar -czf radaba-${{ github.sha }}.tgz .next/standalone .next/static public package.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: radaba-${{ github.sha }}
+          path: radaba-${{ github.sha }}.tgz
+          if-no-files-found: error
+          retention-days: 14

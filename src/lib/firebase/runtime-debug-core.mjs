@@ -1,0 +1,10 @@
+import {createHash} from "node:crypto";
+
+const PROCESS_STARTED_AT=new Date(Date.now()-process.uptime()*1000).toISOString();
+export const shortRuntimeHash=(value)=>createHash("sha256").update(String(value??"")).digest("hex").slice(0,10);
+export const runtimeDebugEnabled=(env=process.env)=>env.NODE_ENV==="development"&&env.RADABA_RUNTIME_DEBUG==="true";
+const environmentEntry=(value)=>({present:Boolean(value),hash:value?shortRuntimeHash(value):null});
+export function createSafeRuntimeFingerprint(input,env=process.env){
+ const root=String(input.projectRoot??process.cwd()),cwd=process.cwd(),projectId=String(input.projectId??""),databaseURL=String(input.databaseURL??"");
+ return{pid:process.pid,appName:String(input.appName??"[DEFAULT]"),projectHash:shortRuntimeHash(projectId),databaseHash:shortRuntimeHash(databaseURL),buildId:shortRuntimeHash(`${input.packageVersion??"unknown"}:${PROCESS_STARTED_AT}`),cwdHash:shortRuntimeHash(cwd),appRootHash:shortRuntimeHash(root),nodeEnv:String(env.NODE_ENV??"unset"),emulator:Boolean(env.FIREBASE_DATABASE_EMULATOR_HOST),credentialSource:env.FIREBASE_SERVICE_ACCOUNT?"service-account-json":env.GOOGLE_APPLICATION_CREDENTIALS?"application-default-file":"application-default",environment:{NEXT_PUBLIC_FIREBASE_DATABASE_URL:environmentEntry(env.NEXT_PUBLIC_FIREBASE_DATABASE_URL),FIREBASE_SERVICE_ACCOUNT:environmentEntry(env.FIREBASE_SERVICE_ACCOUNT),FIREBASE_ADMIN_PROJECT_ID:environmentEntry(env.FIREBASE_ADMIN_PROJECT_ID),FIREBASE_ADMIN_CLIENT_EMAIL:environmentEntry(env.FIREBASE_ADMIN_CLIENT_EMAIL),FIREBASE_ADMIN_PRIVATE_KEY:environmentEntry(env.FIREBASE_ADMIN_PRIVATE_KEY),GOOGLE_APPLICATION_CREDENTIALS:environmentEntry(env.GOOGLE_APPLICATION_CREDENTIALS),FIREBASE_DATABASE_EMULATOR_HOST:environmentEntry(env.FIREBASE_DATABASE_EMULATOR_HOST),NODE_ENV:environmentEntry(env.NODE_ENV)}};
+}

@@ -1,0 +1,6 @@
+﻿export default function ProfileLoading() {
+  return <div className="space-y-5" aria-busy="true" aria-label="Loading Profile Workspace">
+    <div className="space-y-3"><div className="h-8 w-60 animate-pulse rounded-lg bg-slate-200 motion-reduce:animate-none"/><div className="h-4 max-w-xl animate-pulse rounded bg-slate-200 motion-reduce:animate-none"/></div>
+    <div className="grid gap-5 xl:grid-cols-[minmax(16rem,0.28fr)_minmax(0,0.72fr)]"><div className="space-y-4"><div className="h-80 animate-pulse rounded-2xl border bg-white motion-reduce:animate-none"/><div className="h-28 animate-pulse rounded-2xl border bg-white motion-reduce:animate-none"/><div className="h-52 animate-pulse rounded-2xl border bg-white motion-reduce:animate-none"/></div><div className="overflow-hidden rounded-2xl border bg-white"><div className="flex gap-3 border-b p-4">{Array.from({length:5},(_,i)=><div key={i} className="h-8 w-24 animate-pulse rounded bg-slate-200 motion-reduce:animate-none"/>)}</div><div className="grid gap-4 p-6 sm:grid-cols-2 2xl:grid-cols-3">{Array.from({length:6},(_,i)=><div key={i} className="h-28 animate-pulse rounded-xl bg-slate-100 motion-reduce:animate-none"/>)}</div></div></div>
+  </div>;
+}

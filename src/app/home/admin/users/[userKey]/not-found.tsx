@@ -1,0 +1,2 @@
+import Link from "next/link";
+export default function AdminUserNotFound(){return <section className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center"><h1 className="text-xl font-semibold">User not found</h1><p className="mt-2 text-sm text-slate-600">The requested application user record does not exist or the identifier is invalid.</p><Link href="/home/admin/users" className="mt-5 inline-flex min-h-10 items-center rounded-lg font-semibold text-indigo-700 focus-visible:ring-2 focus-visible:ring-indigo-500">Back to Users</Link></section>;}

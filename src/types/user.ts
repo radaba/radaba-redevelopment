@@ -2,6 +2,7 @@ import type { Menu } from "./menu";
 import type { Session } from "./session";
 
 export interface User extends Session {
+  user_key?: string;
   company?: string;
   create_date?: string;
   department?: string;
@@ -19,6 +20,11 @@ export interface User extends Session {
   name: string;
   office_location?: string;
   phone?: string;
+  photo_name?: string;
+  photo_url?: string;
+  photo_storage_path?: string;
+  photo_updated_at?: string;
+  updated_at?: string;
   position?: string;
   region?: string;
   role: string;

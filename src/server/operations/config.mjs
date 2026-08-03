@@ -1,0 +1,5 @@
+﻿const booleans=new Set(["true","false"]);
+const percentages=new Set([0,5,10,25,50,75,100]);
+function bool(env,name,fallback){const raw=env[name];if(raw===undefined||raw==="")return fallback;if(!booleans.has(raw))throw new Error(`Invalid ${name}`);return raw==="true";}
+function percentage(env){const raw=env.MOBILE_PROGRESSIVE_ROLLOUT_PERCENTAGE??"0";if(!/^\d+$/.test(raw))throw new Error("Invalid MOBILE_PROGRESSIVE_ROLLOUT_PERCENTAGE");const value=Number(raw);if(!percentages.has(value))throw new Error("Invalid MOBILE_PROGRESSIVE_ROLLOUT_PERCENTAGE");return value;}
+export function resolveOperationalConfig(env=process.env){return Object.freeze({compatibilityApiEnabled:bool(env,"MOBILE_COMPATIBILITY_API_ENABLED",true),legacyFallbackEnabled:bool(env,"MOBILE_LEGACY_FALLBACK_ENABLED",false),monitoringEnabled:bool(env,"MOBILE_MONITORING_ENABLED",true),healthEndpointsEnabled:bool(env,"PRODUCTION_HEALTH_ENDPOINTS_ENABLED",true),rolloutPercentage:percentage(env),securityMode:env.MOBILE_API_SECURITY_MODE||"legacy-compatible"});}

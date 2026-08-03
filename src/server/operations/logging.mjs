@@ -1,0 +1,5 @@
+﻿import { createHash, randomUUID } from "node:crypto";
+const clean=value=>String(value||"").replace(/[\u0000-\u001f\u007f]/g,"").slice(0,160);
+const actor=value=>value?createHash("sha256").update(String(value)).digest("hex").slice(0,12):undefined;
+export function operationalRequestContext(request){return {requestId:clean(request.headers.get("x-request-id"))||randomUUID(),correlationId:clean(request.headers.get("x-correlation-id"))||undefined};}
+export function createOperationalLogger(write=console.info,clock=()=>new Date()){return {request(event){try{write(JSON.stringify({type:"api_request",timestamp:clock().toISOString(),request_id:clean(event.requestId),correlation_id:clean(event.correlationId)||undefined,route:clean(event.route),method:clean(event.method),latency_ms:Math.max(0,Math.round(Number(event.latencyMs)||0)),status:Number(event.status)||500,actor_id:actor(event.uid),security_mode:clean(event.securityMode),compatibility_mode:clean(event.compatibilityMode)}));}catch{}}};}

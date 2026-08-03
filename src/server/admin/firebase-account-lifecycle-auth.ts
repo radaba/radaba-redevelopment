@@ -1,0 +1,2 @@
+import "server-only";import type {Auth} from "firebase-admin/auth";import {firebaseAdminAuth} from "@/lib/firebase/admin";import type {AccountLifecycleAuth} from "./user-account-lifecycle-service";
+export class FirebaseAccountLifecycleAuth implements AccountLifecycleAuth{constructor(private readonly auth:Auth=firebaseAdminAuth){}async disabled(uid:string){return (await this.auth.getUser(uid)).disabled;}async setDisabled(uid:string,disabled:boolean){await this.auth.updateUser(uid,{disabled});}async revoke(uid:string){await this.auth.revokeRefreshTokens(uid);}}

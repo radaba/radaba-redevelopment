@@ -1,0 +1,5 @@
+import { resolveAdministrator } from "@/server/admin/admin-session";
+import { adminApiError } from "@/server/admin/admin-api";
+import { FirebaseAuditCenterRepository } from "@/server/audit/firebase-audit-center-repository";
+import { exportAuditCsv,filterAuditEvents } from "@/features/audit/audit-center";
+export async function GET(request:Request){try{await resolveAdministrator();const query=Object.fromEntries(new URL(request.url).searchParams),result=await new FirebaseAuditCenterRepository().list(),filtered=filterAuditEvents(result.events,query).items,csv=exportAuditCsv(filtered),stamp=new Date().toISOString().replaceAll(/[:.]/g,"-");return new Response(csv,{headers:{"Content-Type":"text/csv; charset=utf-8","Content-Disposition":`attachment; filename="radaba-audit-current-filtered-${stamp}.csv"`,"X-Audit-Export-Scope":"bounded-filtered-result-set","Cache-Control":"private, no-store"}})}catch(error){return adminApiError(error)}}

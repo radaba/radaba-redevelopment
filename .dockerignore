@@ -1,0 +1,11 @@
+.git
+.github
+.next
+node_modules
+.env*
+!.env.example
+service-account*.json
+*.log
+coverage
+.docs
+tests

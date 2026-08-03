@@ -1,0 +1,1 @@
+export interface GlobalSearchSourceRow{key:string;value:Record<string,unknown>}export interface GlobalSearchRepository{read(path:"assignment"|"tower"|"cell"|"user",limit:number):Promise<GlobalSearchSourceRow[]>}

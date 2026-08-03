@@ -1,0 +1,4 @@
+import { secureMobileHandler } from "@/server/mobile-api/security/runtime";
+import { FirebaseMobileImageCommandRepository } from "@/server/mobile-api/repositories/firebase-mobile-image-command-repository";import { createUpdateImageDetailsHandler } from "@/server/mobile-api/routes/update-image-details.mjs";import { createMobileImageCommandService } from "@/server/mobile-api/services/mobile-image-command-service.mjs";
+export const dynamic="force-dynamic";const compatibilityHandler =createUpdateImageDetailsHandler(createMobileImageCommandService(new FirebaseMobileImageCommandRepository()));const handler = secureMobileHandler(compatibilityHandler, "updateImageDetails");
+export { handler as GET,handler as POST,handler as PUT,handler as PATCH,handler as DELETE,handler as OPTIONS,handler as HEAD};

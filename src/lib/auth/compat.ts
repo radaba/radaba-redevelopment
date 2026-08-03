@@ -20,6 +20,8 @@ export function buildLegacyUserSessionPayload(user: LegacyUserLike, privilege?: 
   };
 }
 
-export default {
+const compatModule = {
   buildLegacyUserSessionPayload,
 };
+
+export default compatModule;

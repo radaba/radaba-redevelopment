@@ -1,5 +1,8 @@
-const { buildLegacyUserSessionPayload } = require('./compat.mjs');
+import { buildLegacyUserSessionPayload as buildLegacyUserSessionPayloadFromModule } from './compat.mjs';
 
-module.exports = {
-  buildLegacyUserSessionPayload,
+const compatModule = {
+  buildLegacyUserSessionPayload: buildLegacyUserSessionPayloadFromModule,
 };
+
+export { buildLegacyUserSessionPayloadFromModule as buildLegacyUserSessionPayload };
+export default compatModule;

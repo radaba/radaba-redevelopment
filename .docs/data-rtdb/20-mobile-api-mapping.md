@@ -1,0 +1,19 @@
+# Mobile API mapping
+
+| Mobile route                     | RTDB reads                                    | RTDB writes                               | Storage                    | Key fields             | Transaction          | Risk                               |
+| -------------------------------- | --------------------------------------------- | ----------------------------------------- | -------------------------- | ---------------------- | -------------------- | ---------------------------------- |
+| signin                           | user, privilege                               | log                                       | no                         | email                  | no                   | duplicate profiles/log sensitivity |
+| resetPassword                    | none                                          | none                                      | Auth                       | email                  | n/a                  | Auth only                          |
+| getassignmentsById               | assignment                                    | none                                      | no                         | assignment_id          | no                   | duplicate first result             |
+| getCellDetails/PerSector         | cell                                          | none                                      | no                         | assignment_id/rcell_id | no                   | duplicate return                   |
+| getImageDetails                  | image                                         | none                                      | no                         | assignment_id          | no                   | duplicate aggregates               |
+| updateCellDetails                | cell                                          | cell                                      | no                         | rcell_id               | no                   | query/push race                    |
+| updateImageDetails               | assignment/cell/image                         | cell/image                                | binary uploaded by Android | assignment_id/rcell_id | no                   | partial fan-out                    |
+| updateAssignmentDetails          | assignment/user; finish adds cell/image/tower | assignment and finish fan-out/achievement | report uploaded by Android | assignment_id/state    | per achievement only | partial finish/replay              |
+| updateUserDetails                | user                                          | user                                      | profile upload external    | email                  | no                   | update all duplicate emails        |
+| getUtility                       | utility                                       | none                                      | no                         | key                    | no                   | full read                          |
+| getCatalogs                      | category/reference paths                      | none                                      | no                         | catalog type           | no                   | legacy parity varies               |
+| getAorSummaryById                | assignment/cell/image                         | none                                      | no                         | assignment_id          | no                   | denormalized aggregate             |
+| reject/drop reasons/current time | none/static                                   | none                                      | no                         | n/a                    | n/a                  | none                               |
+
+Active App Router coverage is partial relative to all legacy routes; the detailed disposition is in `.docs/mobile-api-compatibility`.

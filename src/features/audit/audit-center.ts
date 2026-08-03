@@ -1,0 +1,8 @@
+import * as runtime from "./audit-center.mjs";
+export type AuditModule="assignment"|"tower"|"cell"|"user"|"role"|"privilege"|"profile"|"import"|"maintenance"|"authentication"|"unknown";
+export interface AuditEvent {canonicalKey:string;eventKey:string;parentKey:string;sourceRoot:string;module:AuditModule;action:string;actionLabel:string;category:string;severity:"info"|"warning"|"critical";targetKey:string;targetId:string;targetLabel:string;actorUid:string;actorEmail:string;actorName:string;timestamp:{raw:unknown;valid:boolean;epochMs:number|null;iso:string|null};timestampRaw:unknown;reason:string;changedFields:string[];before:Record<string,unknown>;after:Record<string,unknown>;metadata:Record<string,unknown>;result:string;malformed:boolean}
+export const normalizeAuditEvent=runtime.normalizeAuditEvent as (root:string,parent:string,key:string,raw:unknown)=>AuditEvent;
+export const filterAuditEvents=runtime.filterAuditEvents as (events:AuditEvent[],query?:Record<string,string|string[]|undefined>)=>{items:AuditEvent[];filters:Record<string,string|boolean>};
+export const compareAuditValues=runtime.compareAuditValues as (before:Record<string,unknown>,after:Record<string,unknown>)=>Array<{field:string;before:unknown;after:unknown;state:string}>;
+export const exportAuditCsv=runtime.exportAuditCsv as (events:AuditEvent[])=>string;
+export const auditTargetHref=runtime.auditTargetHref as (event:AuditEvent)=>string|null;

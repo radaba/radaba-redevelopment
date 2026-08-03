@@ -1,0 +1,8 @@
+import { redirect } from "next/navigation";
+import { AdminSessionError, resolveAdministrator } from "@/server/admin/admin-session";
+import { AdminPermissionDenied } from "@/components/admin/admin-page-state";
+import { FirebaseAuditCenterRepository } from "@/server/audit/firebase-audit-center-repository";
+import { filterAuditEvents } from "@/features/audit/audit-center";
+import { AuditCenterWorkspace } from "@/components/audit/audit-center-workspace";
+export const dynamic="force-dynamic";
+export default async function AuditPage({searchParams}:{searchParams:Promise<Record<string,string|string[]|undefined>>}){try{await resolveAdministrator()}catch(error){if(error instanceof AdminSessionError&&error.status===401)redirect("/login");return <AdminPermissionDenied/>}const query=await searchParams;let result;try{result=await new FirebaseAuditCenterRepository().list()}catch{return <section role="alert"><h1>Audit sources unavailable</h1><p>One or more audit sources could not be loaded.</p></section>}const filtered=filterAuditEvents(result.events,query),cursor=typeof query.cursor==="string"?query.cursor:"",start=cursor?Math.max(0,filtered.items.findIndex(e=>e.canonicalKey===cursor)+1):0,pageSize=100,items=filtered.items.slice(0,start+pageSize),next=filtered.items.length>items.length?items.at(-1)?.canonicalKey??null:null;return <AuditCenterWorkspace events={items} allEvents={filtered.items} filters={filtered.filters} unavailableSources={result.unavailableSources} bounded={result.bounded} lastRefreshed={new Date().toLocaleTimeString("en-GB",{timeZone:"Asia/Bangkok"})} nextCursor={next}/>}

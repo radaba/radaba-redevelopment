@@ -1,0 +1,4 @@
+import { secureMobileHandler } from "@/server/mobile-api/security/runtime";
+import { FirebaseMobileAuthProfileRepository } from "@/server/mobile-api/repositories/firebase-mobile-auth-profile-repositories"; import { createUpdateUserDetailsHandler } from "@/server/mobile-api/routes/auth-profile-handlers.mjs"; import { createMobileProfileService } from "@/server/mobile-api/services/mobile-auth-profile-services.mjs";
+export const dynamic = "force-dynamic"; const compatibilityHandler = createUpdateUserDetailsHandler(createMobileProfileService(new FirebaseMobileAuthProfileRepository())); const handler = secureMobileHandler(compatibilityHandler, "updateUserDetails");
+export { handler as GET, handler as POST, handler as PUT, handler as PATCH, handler as DELETE, handler as OPTIONS, handler as HEAD };

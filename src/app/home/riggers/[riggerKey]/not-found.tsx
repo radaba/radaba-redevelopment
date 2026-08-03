@@ -1,0 +1,2 @@
+import Link from "next/link";
+export default function RiggerNotFound(){return <section className="rounded-2xl border bg-white p-6"><h1 className="text-xl font-semibold">Rigger not found</h1><p className="mt-2 text-sm text-slate-600">This user record does not exist or does not meet the proven Rigger position rule.</p><Link href="/home/riggers" className="mt-4 inline-flex min-h-11 items-center font-semibold text-indigo-700 focus-visible:ring-2">Back to Riggers</Link></section>}

@@ -1,0 +1,10 @@
+﻿import { NextResponse } from "next/server";
+import { z } from "zod";
+import { ASSIGNMENT_EXECUTION_LIMITS } from "@/features/assignment/assignment-execution-contract";
+import { assignmentApiError } from "@/server/assignment/assignment-api";
+import { resolveAssignmentActor } from "@/server/assignment/assignment-session";
+import { AssignmentExecutionService } from "@/server/assignment/assignment-execution-service";
+import { FirebaseAssignmentCommandRepository } from "@/server/assignment/firebase-assignment-command-repository";
+const material=z.object({id:z.string().uuid(),name:z.string().trim().min(1).max(ASSIGNMENT_EXECUTION_LIMITS.maximumMaterialNameLength),quantity:z.number().positive().max(ASSIGNMENT_EXECUTION_LIMITS.maximumQuantity),unit:z.string().trim().min(1).max(ASSIGNMENT_EXECUTION_LIMITS.maximumMaterialUnitLength),note:z.string().trim().max(ASSIGNMENT_EXECUTION_LIMITS.maximumMaterialNoteLength)}).strict(); const field=z.string().trim().max(ASSIGNMENT_EXECUTION_LIMITS.maximumReportFieldLength);
+const schema=z.object({expectedRevision:z.number().int().min(0),findings:field,actionsPerformed:field,technicalResult:field,completionNotes:field,recommendations:field,materials:z.array(material).max(ASSIGNMENT_EXECUTION_LIMITS.maximumMaterials)}).strict().refine((value)=>new Set(value.materials.map((entry)=>entry.id)).size===value.materials.length,"Material IDs must be unique.");
+export async function PUT(request:Request,{params}:{params:Promise<{assignmentId:string}>}){try{const user=await resolveAssignmentActor();const body=schema.safeParse(await request.json().catch(()=>null));if(!body.success)return NextResponse.json({success:false,code:"invalid-input",error:"Invalid Work Report input."},{status:400});const {assignmentId}=await params;const data=await new AssignmentExecutionService(new FirebaseAssignmentCommandRepository()).updateWorkReport(decodeURIComponent(assignmentId),body.data,{uid:String(user.uid),name:String(user.name),email:String(user.email),role:String(user.role)});return NextResponse.json({success:true,data},{headers:{"Cache-Control":"private, no-store"}});}catch(error){return assignmentApiError(error);}}

@@ -1,0 +1,2 @@
+import Link from "next/link";
+export default function CellNotFound(){return <section className="rounded-2xl border border-dashed bg-white p-10 text-center"><h1 className="text-xl font-semibold">Cell not found</h1><p className="mt-2 text-sm text-slate-600">The database key is invalid, missing, or no longer available.</p><Link href="/home/cells" className="mt-4 inline-flex min-h-11 items-center font-semibold text-indigo-700 focus-visible:ring-2">Back to Cells</Link></section>}

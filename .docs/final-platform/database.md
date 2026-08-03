@@ -1,0 +1,5 @@
+﻿# Database and storage
+
+Firebase Realtime Database remains the source of truth. Existing node names, snake_case fields, scalar types, push keys, duplicate behavior, query shapes, and fan-out order are compatibility contracts. Major paths include user, privilege, Assignment, Tower, Cell, image, utility, logs, audits, comments, photos, productivity, and achievement records as documented in the domain contracts.
+
+No M14R schema, index, migration, rewrite, normalization, or data operation occurred. Backups and restores must use approved Firebase tooling, preserve Auth separately from RTDB/Storage, record project/environment identity, and validate into an isolated environment before production restore. Storage rules and metadata contracts must be released with their matching application artifact.

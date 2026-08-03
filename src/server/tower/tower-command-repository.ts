@@ -1,0 +1,4 @@
+import type {RawTowerRecord} from "@/features/tower/tower-types";
+import type {TowerScalar} from "@/features/tower/tower-types";
+import type{TowerAuditRecord}from"@/features/tower/tower-audit-contract";
+export interface TowerCommandRepository{reserveKey():string;reserveAuditKey(towerKey:string):string;createIfTowerIdAvailable(key:string,record:RawTowerRecord,audit:TowerAuditRecord):Promise<{outcome:"created"|"duplicate";key:string}>;findByKey(key:string):Promise<RawTowerRecord|null>;updateFieldsWithAudit(key:string,updates:Record<string,TowerScalar>,expected:Record<string,TowerScalar>,audit:TowerAuditRecord):Promise<"updated"|"not_found"|"conflict">;listExistingTowerIds(limit:number):Promise<{ids:Set<string>;overflow:boolean}>;createManyIfTowerIdsAvailable(records:Record<string,RawTowerRecord>,audits:Record<string,TowerAuditRecord>,maxExisting:number):Promise<{outcome:"created"|"conflict"|"capacity";conflicts:string[]}>}

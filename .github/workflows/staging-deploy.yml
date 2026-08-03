@@ -1,0 +1,72 @@
+name: Staging deployment
+on:
+  workflow_dispatch:
+  push:
+    branches: [develop]
+permissions:
+  contents: read
+concurrency:
+  group: radaba-staging
+  cancel-in-progress: false
+jobs:
+  validate:
+    uses: ./.github/workflows/ci.yml
+  package:
+    needs: validate
+    runs-on: ubuntu-latest
+    environment: staging
+    env:
+      CI: "true"
+      RADABA_ENV: staging
+      APP_URL: ${{ vars.APP_URL }}
+      APP_VERSION: ${{ vars.APP_VERSION }}
+      BUILD_ID: ${{ github.sha }}
+      NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}
+      NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ vars.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN }}
+      NEXT_PUBLIC_FIREBASE_DATABASE_URL: ${{ vars.NEXT_PUBLIC_FIREBASE_DATABASE_URL }}
+      NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{ vars.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
+      NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: ${{ vars.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET }}
+      NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${{ vars.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID }}
+      NEXT_PUBLIC_FIREBASE_APP_ID: ${{ vars.NEXT_PUBLIC_FIREBASE_APP_ID }}
+      FIREBASE_ADMIN_PROJECT_ID: ${{ vars.FIREBASE_ADMIN_PROJECT_ID }}
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci
+      - run: npm run env:check
+      - run: npm run build
+      - run: tar -czf radaba-${{ github.sha }}.tgz .next/standalone .next/static public package.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: staging-radaba-${{ github.sha }}
+          path: radaba-${{ github.sha }}.tgz
+          if-no-files-found: error
+          retention-days: 14
+  deploy:
+    needs: package
+    runs-on: [self-hosted, staging]
+    environment: staging
+    env:
+      RADABA_ENV: staging
+      RELEASE_COMMIT: ${{ github.sha }}
+      BUILD_ID: ${{ github.sha }}
+      EXPECTED_ENVIRONMENT_FINGERPRINT: ${{ vars.ENVIRONMENT_FINGERPRINT }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: staging-radaba-${{ github.sha }}
+      - name: Require approved deployment adapter
+        run: test -x /opt/radaba/bin/deploy-release
+      - name: Verify target fingerprint
+        run: /opt/radaba/bin/environment-fingerprint --expect "$EXPECTED_ENVIRONMENT_FINGERPRINT"
+      - name: Deploy immutable commit
+        run: /opt/radaba/bin/deploy-release staging "$RELEASE_COMMIT" "radaba-$RELEASE_COMMIT.tgz"
+      - name: Post-deploy smoke tests
+        env:
+          SMOKE_BASE_URL: ${{ vars.APP_URL }}
+        run: node scripts/smoke-test.mjs

@@ -1,0 +1,2 @@
+import{NextResponse}from"next/server";import{TOWER_IMPORT_FILENAME,towerImportTemplate}from"@/features/tower/tower-import-contract";import{resolveAdministrator}from"@/server/admin/admin-session";import{adminApiError}from"@/server/admin/admin-api";
+export async function GET(){try{await resolveAdministrator();return new NextResponse(towerImportTemplate(),{headers:{"Content-Type":"text/csv; charset=utf-8","Content-Disposition":`attachment; filename="${TOWER_IMPORT_FILENAME}"`,"Cache-Control":"private, no-store"}})}catch(error){return adminApiError(error)}}

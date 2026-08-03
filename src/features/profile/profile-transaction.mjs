@@ -1,0 +1,3 @@
+const objectRecord=value=>value!==null&&typeof value==="object"&&!Array.isArray(value);
+export function selectProfileTransactionCandidate(current,preReadRecord,observedNonNull){if(objectRecord(current))return {candidate:current,observedNonNull:true,source:"transaction_current",abortReason:null};if((current===null||current===undefined)&&!observedNonNull&&objectRecord(preReadRecord))return {candidate:preReadRecord,observedNonNull:false,source:"pre_read",abortReason:null};return {candidate:null,observedNonNull,source:"none",abortReason:"profile_changed"}}
+export function profileTransactionAbortStatus(abortReason){if(abortReason==="profile_changed")return "profile_changed";return "transaction_conflict"}
