@@ -42,3 +42,5 @@ next-env.d.ts
 
 # local Firebase Admin credentials
 /service-account.json
+
+service-account.json
